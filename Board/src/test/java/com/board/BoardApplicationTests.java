@@ -19,7 +19,7 @@ class BoardApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test(anme)
+	@Test
 	public void testByApplicationContext() {
 		try {
 			System.out.println("=========================");
