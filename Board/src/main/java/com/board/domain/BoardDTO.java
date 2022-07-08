@@ -42,4 +42,8 @@ public class BoardDTO {
 	/** 삭제일 */
 	private LocalDateTime deleteTime;
 
+
+
+	
+	
 }
