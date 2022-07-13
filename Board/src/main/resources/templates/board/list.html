@@ -1,72 +1,85 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="board/layout/basic">
-<th:block layout:fragment="title">
-	<title>This page is a list page</title>
-</th:block>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="board/layout/basic">
+	<th:block layout:fragment="title">
+		<title>this is list page</title>
+	</th:block>
 
-<th:block layout:fragment="search">
-	<form action="#" id="searchform-header"
-		class="searchform js__toggle active pull-right">
-		<input type="search" placeholder="Search..." class="input-search">
-		<button class="mdi mdi-magnify button-search" type="submit">
-			<i class="fa fa-search" aria-hidden="true"></i>
-		</button>
-	</form>
-</th:block>
+	<th:block layout:fragment="search">
+		<div th:replace="board/fragments/common :: search"></div>
+	</th:block>
 
-<th:block layout:fragment="content">
-	<div class="table-responsive clearfix">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>제목</th>
-					<th>작성자</th>
-					<th>등록일</th>
-					<th>조회 수</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${not #lists.isEmpty( boardList )}"
-					th:each="row : ${boardList}">
-					<td scope="row"
-						th:text="${#strings.equals( row.noticeYn, 'Y' ) ? '공지' : row.idx}"></td>
-					<td class="text-left"><a
-						th:href="@{/board/view.do( idx=${row.idx} )}"
-						th:text="${row.title}"></a></td>
-					<td th:text="${row.writer}"></td>
-					<td th:text="${#temporals.format( row.insertTime, 'yyyy-MM-dd' )}"></td>
-					<td th:text="${row.viewCnt}"></td>
-				</tr>
-				<tr th:unless="${not #lists.isEmpty( boardList )}">
-					<td colspan="5">조회된 결과가 없습니다.</td>
-				</tr>
-			</tbody>
-		</table>
+	<th:block layout:fragment="content">
+		<div class="table-responsive clearfix">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>번호</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>등록일</th>
+						<th>조회 수</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${not #lists.isEmpty( boardList )}" th:each="row : ${boardList}">
+						<td scope="row" th:text="${#strings.equals( row.noticeYn, 'Y' ) ? '공지' : row.idx}"></td>
+						<td class="text-left">
+							<a th:href="|@{/board/view.do}${params.makeQueryString(params.currentPageNo)}&idx=${row.idx}|" th:text="${row.title}"></a>
+						</td>
+						<td th:text="${row.writer}"></td>
+						<td th:text="${#temporals.format( row.insertTime, 'yyyy-MM-dd' )}"></td>
+						<td th:text="${row.viewCnt}"></td>
+					</tr>
+					<tr th:unless="${not #lists.isEmpty( boardList )}">
+						<td colspan="5">조회된 결과가 없습니다.</td>
+					</tr>
+				</tbody>
+			</table>
 
-		<div class="btn_wrap text-right">
-			<a th:href="@{/board/write.do}"
-				class="btn btn-primary waves-effect waves-light">Write</a>
+			<div class="btn_wrap text-right">
+				<a th:href="@{/board/write.do}" class="btn btn-primary waves-effect waves-light">Write</a>
+			</div>
+
+			<th:block layout:fragment="paging">
+				<nav th:replace="board/fragments/common :: pagination"></nav>
+			</th:block>
 		</div>
+	</th:block>
 
-		<th:block layout:fragment="paging">
-
-			<nav th:replace="board/fragments/common :: pagination"></nav>
-
-		</th:block>
-	</div>
-</th:block>
-<th:block layout:fragment="script">
-	<script th:inline="javascript">
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
 			/*<![CDATA[*/
 
 			function movePage(uri, queryString) {
 				location.href = uri + queryString;
 			}
 
+			function searchBoard(form) {
+				/*[- 드롭다운이 아닌 메인 검색 키워드로 검색했을 때 -]*/
+				if (isEmpty(form) == true) {
+					var searchKeyword = document.getElementById("mainSearchKeyword");//왼쪽검색어 입려ㅑㄱ부분
+					//자바스크립트의 searchKeyworld는 html의 name이 searchKeyworld 다른아이
+					if (isEmpty(searchKeyword.value) == true) { // 직접입력하는칸이 비었을경우
+						alert("키워드를 입력해 주세요.");
+						searchKeyword.focus();
+						return false;
+					}
+					// 직접입력하는 칸이 안비었을경우
+					form = document.getElementById("searchForm");
+					//form.searchKeyword는 아래 화살표를 클릭하고 나오는 키워드 입력칸을 말한다
+					form.searchKeyword.value = searchKeyword.value; //화살표 없이 입력한데이터를 홧살표가있는 데이터에 넣어라
+					form.submit();
+				}
+			
+				if (isEmpty(form.searchKeyword.value) == true) {
+					alert("키워드를 입력해 주세요.");
+					form.searchKeyword.focus();
+					return false;
+				}
+			}
+			/*[- end of function -]*/
+
 			/*]]>*/
 		</script>
-</th:block>
+	</th:block>
 </html>
