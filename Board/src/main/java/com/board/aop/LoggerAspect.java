@@ -33,8 +33,9 @@ public class LoggerAspect {
 		}
 
 		//어느 패키지의 어느클래스에서 어떤함수가 호출되었는지 로그찍음
+		Object result = joinPoint.proceed();
 		logger.debug(type + name + "." + joinPoint.getSignature().getName() + "()");
-		return joinPoint.proceed();
+		return result;
 	}
 
 }
