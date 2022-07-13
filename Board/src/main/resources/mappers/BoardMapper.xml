@@ -81,23 +81,24 @@
 		tb_board
 		WHERE
 		delete_yn = 'N'
+		<include refid="CommonMapper.search" />
 		ORDER BY
 		notice_yn ASC,
 		idx DESC,
 		insert_time DESC
-		LIMIT
-		#{startPage}, #{recordsPerPage}
+		<include refid="CommonMapper.paging" />
 	</select>
 
 	<select id="selectBoardTotalCount"
 		parameterType="com.board.domain.BoardDTO"
 		resultType="int">
 		SELECT
-		COUNT(*)
+			COUNT(*)
 		FROM
-		tb_board
+			tb_board
 		WHERE
-		delete_yn = 'N'
+			delete_yn = 'N'
+		<include refid="CommonMapper.search" />
 	</select>
 
 </mapper>
