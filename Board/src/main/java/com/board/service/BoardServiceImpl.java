@@ -1,5 +1,6 @@
 package com.board.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +34,35 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardDTO getBoardDetail(Long idx) {
 		// TODO Auto-generated method stub
-		return null;
+		return boardMapper.selectBoardDetail(idx);
 	}
 
 	@Override
 	public boolean deleteBoard(Long idx) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		int queryResult = 0;
 
+		BoardDTO board = boardMapper.selectBoardDetail(idx);
+
+		if (board != null && "N".equals(board.getDeleteYn())) {
+			queryResult = boardMapper.deleteBoard(idx);
+		}
+
+		return (queryResult == 1) ? true : false;
+	}
 	@Override
 	public List<BoardDTO> getBoardList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		List<BoardDTO> boardList = Collections.emptyList();
+
+		int boardTotalCount = boardMapper.selectBoardTotalCount();
+
+		if (boardTotalCount > 0) {
+			boardList = boardMapper.selectBoardList();
+		}
+
+		return boardList;
+	
+
+}
 
 	
 	
